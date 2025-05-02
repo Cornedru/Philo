@@ -1,0 +1,9 @@
+{
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "/home/ndehmej/Desktop/philo/test",
+			"binaryPath": "/home/ndehmej/Desktop/philo/test/philo",
+			"binaryArgs": [10, 200, 200]
+		}
+	]
+}

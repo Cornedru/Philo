@@ -1,0 +1,164 @@
+Philo :
+
+
+s'assurer que les args sont ok genre assez args si cest tous des chiffres      OK
+mutex = verou protege les donnes partages contre lacces concurrent
+thread = ressources a la quelle on veut acceder permet lexecution concurrentes dans un programme 
+
+
+toujours verouiller les mutex dans le meme ordres dans tous les thread
+utiliser un timeout ou une logiquee de detection de deadlock
+
+
+main est un thread mais je peut en cre dautre pour exec des fonctions en parallalele 
+
+*thinking*
+
+commencer par faire tourner un philo :
+
+• le faire manger sans penser ni dormir 
+• le faire penser sans manger ni dormir 
+• le faire dormir sans mager ni penser
+
+regles :
+• il y a autant de philo que de fourchette (FphiloFphiloFphiloFphilo) 4 philo 4 Fourchettes
+
+pour manger il doit avoir 2 fourchette :
+
+	- pour avoir 2 fourchette il doit les unlock
+	-  unlock celle de gauche et celle de droite 
+	- puis lorsquil fini il doit le reposer 
+
+quand il fini de manger il dort, lorquil fini de dormir (se reveille) il commence a penser puis remanger puis redort etc.. (Donc il commence par penser puis mager puis dormir)
+ la simulation se fini lorsqun philo meur de faim (famine)
+
+tous les philo doivent manger
+il ne doivent pas communiquer entre eux ? 
+il ne doivent pas savoir si lun ou lautre meurt
+
+
+
+structure philo qui contient :
+• le nombre de philo
+• le temps ou si il na pas manger depuis le debut de la simu ou depuis sond derneir repas il meurt 
+• le temps qun philo prend pour mager (le temps ou il tiendra ces deux fourchette)
+• le temps quil prend a dormir 
+• *optinnel* Le nombre de repas minimum ou si chaque philo les a manger la simu sarrette (si pas ajouter la simu sarrette quand un philo meurt )
+
+table circulaire 
+
+philo 1
+philo 2
+philo 3
+philo 4
+philo 5
+
+philo 1 est entre le 5 et le 2 donc ( philo 1 -> n+1 = 2 et n-1 = 4)
+
+log du programme
+
+time in mx *num du philo* a pris une fourchette 
+time in mx *num du philo* en train de manger
+time in mx *num du philo* en train de dormir 
+time in mx *num du philo* en train de penser 
+time in mx *num du philo* mort 
+
+les messages de doivent pas se chevaucher
+le message de mort doit safficher dans les 10 ms
+
+
+pas de data race ??
+
+cault volt po
+
+time to die to eat to sleep 0
+
+parse_args() → init_data() → init_philos()
+→ start_threads() → routine() (vie du philo)
+→ monitor() → join() → cleanup()
+
+Récupéré les paramètres (nbr de philosophes, temps à mourir, manger, dormir, etc.)
+
+Vérifié leur validité (et converti en int)
+
+Initialisé ta t_data via init_data
+
+    Les philosophes avec un id pair prennent d'abord la fourchette de gauche, puis la droite.
+
+    Ceux avec un id impair prennent d'abord la fourchette de droite, puis la gauche.
+
+Ça évite le blocage mutuel
+
+
+Une fois qu’il a mangé Il relâche les deux fourchettes = il déverrouille les mutex
+
+pthread_mutex_unlock(&philo->data->forks[*****])
+pthread_mutex_unlock(&philo->data->forks[*****])
+
+
+Une fourchette à gauche (ex: forks[i])
+
+Une fourchette à droite (ex: forks[(i + 1) % nbr]) – le modulo permet de revenir au début pour le dernier philosophe
+
+
+
+data->print
+
+    But : empecher que plusieurs philosophes fassent des printf en même temps.
+
+     Sinon les messages s'entremêlent dans le terminal.
+
+
+data->death_mutex
+
+    But : protéger la variable data->dead.
+
+    lusieurs threads peuvent vouloir lire ou écrire cette variable en même temps (pour savoir si la simulatoin continue)
+
+
+data->meal_mutex 
+
+    But : synchr l’accès aux données liées aux repas.
+
+   pour que les threads ne lisnet ou n’écrivent pas le temps du dernier repas en meme temps
+
+fonctions pour tous faire peter en prenant i en tous peter avant i et les malloc aussi (tous ce qui a etais allouer)
+
+
+
+main :
+	- parse args , init data , init philo
+		return 1
+	i < nbr
+	create philos[i].trhead, null, routine, philos[i]
+pthread create monitor, null monitor, routine, philo
+	i < nbr
+	join philo i++.trhread,null
+join monitor, null
+
+
+init :
+intit data
+	- mutex init (data->mutex, NULL)
+	i < nbr
+	malloc data fork * data nbr
+	mutex init data->forks,null
+
+init philos
+malloc philo * data nbr
+i < nbr
+(*philos)[i].id = i + 1
+				=0
+				=0
+				=data 
+i++;	
+
+
+routine :
+
+take fork 
+
+eat sleep think
+
+
+
