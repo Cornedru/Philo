@@ -2,6 +2,16 @@
 #include <stdlib.h>
 #include "../include/philo.h"
 
+int ft_strcmp(const char *s1, const char *s2)
+{
+	while (*s1 && *s2 && *s1 == *s2)
+	{
+		s1++;
+		s2++;
+	}
+	return (*s1 -*s2);
+} 
+
 void ft_putstr_fd(char *s, int fd)
 {
 	int i;
@@ -59,25 +69,75 @@ long long time_in_ms(void)
 	return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
 }
 
-void *routine(void *param)
+void *philo(void *param)
 {
     t_philo *philo;
     philo = (t_philo *)param;
     t_data *data = philo->data;
-	(void)data;
-	int i = 0;
+	// int i = 0;
+
     int active;
-	active = 1;
-	while (i < 10)
-	// while (check_death(philo))
-	{
-		if (philo->data->nbr_thread == 1)
+	active = 0;
+	philo->alive = 1;
+	philo->first_lap = 1;
+	pthread_mutex_lock(&philo->meal_mutex);
+	philo->last_meal = time_in_ms();
+	philo->meals_eaten = 0;
+	pthread_mutex_unlock(&philo->meal_mutex);
+	// if (philo->id % 2 == 0 && philo->first_lap)
+	// {	
+	// 	philo->first_lap = 0;
+	// 	usleep(1000);
+	// }
+	// else
+	// {
+		while (philo->alive == 1)
 		{
-			print_statut(philo, "has taken a fork");
-			return (0);
-		}
-		philo_eat(philo);
-		i++;
+				print_statut(philo, "is thinking");
+				pthread_mutex_lock(&data->death_mutex);
+				if (data->is_die == 1)
+				{
+					pthread_mutex_unlock(&data->death_mutex);
+					break;
+				}
+				pthread_mutex_unlock(&data->death_mutex);
+				if (philo->data->nbr_thread == 1)
+				{
+					print_statut(philo, "has taken a fork");
+					// print_statut(philo, "is die");
+					usleep(data->time_to_die * 1000);
+					return (0);
+				}
+				philo_eat(philo);
+				pthread_mutex_lock(&data->death_mutex);
+				if (data->is_die == 1)
+				{
+					pthread_mutex_unlock(&data->death_mutex);
+					break;
+				}
+				pthread_mutex_unlock(&data->death_mutex);
+				// pthread_mutex_lock(&data->death_mutex);
+				// if (data->is_die == 1 /*&& data->must_eat > 0*/)
+				// {
+			// 	pthread_mutex_unlock(&data->death_mutex);
+			// 	break;
+			// }
+			// pthread_mutex_unlock(&data->death_mutex);
+			// if (all_eat(philo->data))
+			// 	break;
+			
+			// if (data->must_eat > 0)
+			// {
+			// 	pthread_mutex_lock(&philo->meal_mutex);
+			// 	if (philo->meals_eaten >= data->must_eat)
+			// 	{
+			// 		pthread_mutex_unlock(&philo->meal_mutex);
+			// 		break;
+			// 	}
+			// 	pthread_mutex_unlock(&philo->meal_mutex);
+			// }
+
+		// }
 	}
     return (0);
 }

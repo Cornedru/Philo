@@ -1,14 +1,14 @@
 NAME		= philo
 
 CC			= cc
-FLAGS		= -Wall -Wextra -Werror
+FLAGS		= -Wall -Wextra -Werror #-g3 -fsanitize=thread
 
 SRCS_DIR	= srcs/
 OBJS_DIR	= objects/
 
 
 OBJS		= $(SRCS:.c=.o)
-SRCS 		= main.c utils.c set.c utils2.c
+SRCS 		= main.c utils.c utils2.c
 SRCS_PREF	= $(addprefix $(SRCS_DIR), $(SRCS))
 OBJS_PREF	= $(addprefix $(OBJS_DIR), $(OBJS))
 
