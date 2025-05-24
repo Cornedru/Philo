@@ -8,7 +8,7 @@ OBJS_DIR	= objects/
 
 
 OBJS		= $(SRCS:.c=.o)
-SRCS 		= main.c utils.c utils2.c
+SRCS 		= main.c utils.c utils1.c philo.c monitor.c init.c
 SRCS_PREF	= $(addprefix $(SRCS_DIR), $(SRCS))
 OBJS_PREF	= $(addprefix $(OBJS_DIR), $(OBJS))
 
